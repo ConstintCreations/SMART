@@ -4,7 +4,7 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
 export default function Header() {
     return (
-        <header className="w-full h-14 flex flex-row justify-between items-center bg-gray-900 sticky top-0 px-10">
+        <header className="w-full h-14 flex flex-row justify-between items-center bg-gray-900 fixed top-0 px-10">
             <a href="/" className="flex flex-row text-3xl font-bold gap-1 cursor-pointer hover:translate-y-[-3px] transition-transform ease-in-out duration-300">
                 <p className="text-red-500">S</p>
                 <p className="text-orange-500">M</p>
