@@ -87,8 +87,7 @@ export default function GoalCard({ id, text, createdDate, deadline, colorID, onD
                     {text}
                 </p>
                 <div className="relative w-full bg-gray-700 rounded-full border-2 border-gray-800 overflow-hidden h-8">
-                    <div className={`absolute bg-gray-300 rounded-full h-full ${progressColors[colorID]}`} style={{width: `${progress}%`}}>
-                        
+                    <div className={`absolute rounded-full h-full ${progressColors[colorID]}`} style={{width: `${progress}%`}}>
                     </div>
                     <p className={`relative font-bold text-sm ${progress > 50 ? "text-gray-300" : "text-gray-800" }`}>
                         {Math.floor(progress)}%
