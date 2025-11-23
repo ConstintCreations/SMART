@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faEdit, faCheck } from "@fortawesome/free-solid-svg-icons";
+import confetti from "canvas-confetti";
 
 export default function GoalCard({ id, text, colorID, onDelete }: { id: number, text: string, colorID: number, onDelete: (id: number) => void }) {
 
@@ -18,11 +19,32 @@ export default function GoalCard({ id, text, colorID, onDelete }: { id: number, 
     function handleDelete(e: React.MouseEvent, completed:boolean = false) {
         e.stopPropagation(); 
         setDeleting(true);
+        if (completed) {
+            var end = Date.now() + (2000);
+            var colors = ['#fb2c36', '#ff6900', '#efb100', '#00c951', '#2b7fff'];
+            (function frame() {
+            confetti({
+                particleCount: 5,
+                angle: 60,
+                spread: 55,
+                origin: { x: 0 },
+                colors: colors
+            });
+            confetti({
+                particleCount: 5,
+                angle: 120,
+                spread: 55,
+                origin: { x: 1 },
+                colors: colors
+            });
+
+            if (Date.now() < end) {
+                requestAnimationFrame(frame);
+            }
+            }());
+        }
         setTimeout(() => {
             onDelete(id);
-            if (completed) {
-                
-            }
         }, 1000);
     }
 
