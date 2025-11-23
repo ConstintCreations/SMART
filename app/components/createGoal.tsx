@@ -45,9 +45,9 @@ export default function CreateGoal() {
                     <div>
                         I will <GoalEditableText answerSlots={answerSlots} setAnswerSlots={setAnswerSlots} id={0}></GoalEditableText> before <GoalEditableText answerSlots={answerSlots} setAnswerSlots={setAnswerSlots} id={1}></GoalEditableText> by <GoalEditableText answerSlots={answerSlots} setAnswerSlots={setAnswerSlots} id={2}></GoalEditableText> every <GoalEditableText answerSlots={answerSlots} setAnswerSlots={setAnswerSlots} id={3}></GoalEditableText> for <GoalEditableText answerSlots={answerSlots} setAnswerSlots={setAnswerSlots} id={4}></GoalEditableText> because <GoalEditableText answerSlots={answerSlots} setAnswerSlots={setAnswerSlots} id={5}></GoalEditableText>.
                     </div>
-                    <div className="mt-6 flex flex-row">
-                        <button onClick={() => setQuizComplete(false)} className="cursor-pointer px-5 py-3 bg-gray-700 border-2 border-gray-600 rounded-2xl text-gray-300 hover:bg-blue-700 hover:border-blue-600 transition-colors ease-in-out duration-300 mr-4">Back to Quiz</button>
-                        <button onClick={confirmGoal} className="cursor-pointer px-5 py-3 bg-gray-700 border-2 border-gray-600 rounded-2xl text-gray-300 hover:bg-blue-700 hover:border-blue-600 transition-colors ease-in-out duration-300 mr-4">Confirm Goal</button>
+                    <div className="mt-6 flex flex-row w-full justify-center gap-4">
+                        <button onClick={() => setQuizComplete(false)} className="cursor-pointer px-5 py-3 bg-gray-700 border-2 border-gray-600 rounded-2xl text-gray-300 hover:bg-blue-700 hover:border-blue-600 transition-colors ease-in-out duration-300">Back to Quiz</button>
+                        <button onClick={confirmGoal} className="cursor-pointer px-5 py-3 bg-gray-700 border-2 border-gray-600 rounded-2xl text-gray-300 hover:bg-blue-700 hover:border-blue-600 transition-colors ease-in-out duration-300">Confirm Goal</button>
                     </div>
                 </div>
             )}
