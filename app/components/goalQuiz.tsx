@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-export default function GoalQuiz() {
+export default function GoalQuiz({ answerSlots, setAnswerSlots, setQuizComplete }: { answerSlots: string[], setAnswerSlots: (answers: string[]) => void, setQuizComplete: (value: boolean) => void }) {
 
     let colors = {
         Specific: "bg-red-500",
@@ -34,7 +34,7 @@ export default function GoalQuiz() {
         {
             category: "Time-Bound",
             question: "When do you want to achieve this goal by?",
-            stem: "By",
+            stem: "Before",
             spot: 1
         },
         {
@@ -59,8 +59,6 @@ export default function GoalQuiz() {
 
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
-    const [answerSlots, setAnswerSlots] = useState<string[]>(["", "", "", "", "", ""]);
-
     const handlePreviousQuestion = () => {
         if (currentQuestionIndex > 0) {
             setCurrentQuestionIndex(currentQuestionIndex - 1);
@@ -73,8 +71,7 @@ export default function GoalQuiz() {
                 setCurrentQuestionIndex(currentQuestionIndex + 1);
             }
         } else {
-
-            console.log("Quiz complete! Answers:", answerSlots);
+            setQuizComplete(true);
         }
     };
 
@@ -92,11 +89,9 @@ export default function GoalQuiz() {
                     <input type="text" className="bg-gray-800 text-gray-300 rounded-lg px-3 py-2 border-2 border-gray-600 focus:border-blue-500 focus:bg-blue-900 outline-none transition-all ease-in-out duration-300 text-2xl w-100" 
                         value={answerSlots[questions[currentQuestionIndex].spot]}
                         onChange={(e) => {
-                            setAnswerSlots(prev => {{
-                                const newAnswers = [...prev];
-                                newAnswers[questions[currentQuestionIndex].spot] = e.target.value;
-                                return newAnswers;
-                            }})
+                            const newAnswers = [...answerSlots];
+                            newAnswers[questions[currentQuestionIndex].spot] = e.target.value;
+                            setAnswerSlots(newAnswers);
                         }}
                     ></input>
                 </div>
