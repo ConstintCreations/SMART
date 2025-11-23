@@ -18,6 +18,8 @@ export default function GoalGrid() {
 
     const [editingGoalID, setEditingGoalID] = useState<number | null>(null);
 
+    const [goalColorID, setGoalColorID] = useState(0);
+
     const [existingGoals, setExistingGoals] = useState<Goal[]>([]);
     useEffect(() => {
         const saved = localStorage.getItem("goals");
@@ -25,6 +27,30 @@ export default function GoalGrid() {
             setExistingGoals(JSON.parse(saved));
         }
     }, []);
+
+    const colors = [
+        "bg-red-500",
+        "bg-orange-500",
+        "bg-yellow-500",
+        "bg-green-500",
+        "bg-blue-500"
+    ]
+
+    const selectedBorderColors = [
+        "border-red-500",
+        "border-orange-500",
+        "border-yellow-500",
+        "border-green-500",
+        "border-blue-500"
+    ]
+
+    const borderColors = [
+        "border-red-900 hover:border-red-700",
+        "border-orange-900 hover:border-orange-700",
+        "border-yellow-900 hover:border-yellow-700",
+        "border-green-900 hover:border-green-700",
+        "border-blue-900 hover:border-blue-700"
+    ]
 
     function dateTimeFormatter(dateTimeAnswerSlot: string) {
         if (dateTimeAnswerSlot == "") return "";
@@ -96,6 +122,7 @@ export default function GoalGrid() {
     function editGoal(id: number) {
         setEditingGoalID(id);
         setAnswerSlots(existingGoals.filter((goal) => goal.id === id)[0].answerSlots);
+        setGoalColorID(existingGoals.filter((goal) => goal.id === id)[0].colorID);
     }
 
     function confirmEdit() {
@@ -109,7 +136,8 @@ export default function GoalGrid() {
                         ...goal,
                         text: `I will ${answerSlots[0]} before ${dateTimeFormatter(answerSlots[1])} by ${answerSlots[2]} every ${answerSlots[3]} for ${answerSlots[4]} because ${answerSlots[5]}.`,
                         answerSlots: answerSlots,
-                        deadline: getDeadlineISO(answerSlots[1])
+                        deadline: getDeadlineISO(answerSlots[1]),
+                        colorID: goalColorID
                     }
                 }
                 return goal;
@@ -148,8 +176,19 @@ export default function GoalGrid() {
                         <div className="text-gray-300 mt-8">
                             {
                                 existingGoals.filter((goal) => goal.id === editingGoalID).map((goal) => (
-                                    <div key={goal.id}>
-                                        I will <GoalEditableText id={0} answerSlots={answerSlots} setAnswerSlots={setAnswerSlots}></GoalEditableText> before <GoalEditableText id={1} answerSlots={answerSlots} setAnswerSlots={setAnswerSlots} dateTime={true}></GoalEditableText> by <GoalEditableText id={2} answerSlots={answerSlots} setAnswerSlots={setAnswerSlots}></GoalEditableText> every <GoalEditableText id={3} answerSlots={answerSlots} setAnswerSlots={setAnswerSlots}></GoalEditableText> for <GoalEditableText id={4} answerSlots={answerSlots} setAnswerSlots={setAnswerSlots}></GoalEditableText> because <GoalEditableText id={5} answerSlots={answerSlots} setAnswerSlots={setAnswerSlots}></GoalEditableText>.
+                                    <div key={goal.id} className="flex flex-col gap-4">
+                                        <div className="flex flex-row gap-8">
+                                            <p>Color:</p>
+                                            <div className="flex flex-row gap-2">
+                                                {[0,1,2,3,4].map((colorOption) => (
+                                                    <div key={colorOption} onClick={() => {setGoalColorID(colorOption)}} className={`${colors[colorOption]} h-6 w-10 rounded-full border-3 cursor-pointer transition-colors ease-in-out duration-300 ${goalColorID == colorOption ? selectedBorderColors[colorOption] : borderColors[colorOption]}`}></div>
+                                                    ))}
+                                            </div>
+                                        </div>
+                                        <div>
+                                            Goal: <br />
+                                            I will <GoalEditableText id={0} answerSlots={answerSlots} setAnswerSlots={setAnswerSlots}></GoalEditableText> before <GoalEditableText id={1} answerSlots={answerSlots} setAnswerSlots={setAnswerSlots} dateTime={true}></GoalEditableText> by <GoalEditableText id={2} answerSlots={answerSlots} setAnswerSlots={setAnswerSlots}></GoalEditableText> every <GoalEditableText id={3} answerSlots={answerSlots} setAnswerSlots={setAnswerSlots}></GoalEditableText> for <GoalEditableText id={4} answerSlots={answerSlots} setAnswerSlots={setAnswerSlots}></GoalEditableText> because <GoalEditableText id={5} answerSlots={answerSlots} setAnswerSlots={setAnswerSlots}></GoalEditableText>.
+                                        </div>
                                     </div>
                                 ))
                             }
