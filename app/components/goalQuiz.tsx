@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 export default function GoalQuiz() {
 
     let colors = {
@@ -17,7 +18,7 @@ export default function GoalQuiz() {
         spot: number;
     };
 
-    let questions:Question[] = [
+    const questions:Question[] = [
         {
             category: "Specific",
             question: "What do you want to achieve?",
@@ -56,9 +57,26 @@ export default function GoalQuiz() {
         }
     ]
 
-    let currentQuestionIndex = 0;
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
-    let answerSlots:string[] = ["", "", "", "", "", ""];
+    const [answerSlots, setAnswerSlots] = useState<string[]>(["", "", "", "", "", ""]);
+
+    const handlePreviousQuestion = () => {
+        if (currentQuestionIndex > 0) {
+            setCurrentQuestionIndex(currentQuestionIndex - 1);
+        }
+    };
+
+    const handleNextQuestion = () => {
+        if (currentQuestionIndex < questions.length - 1) {
+            if (answerSlots[questions[currentQuestionIndex].spot] !== "") {
+                setCurrentQuestionIndex(currentQuestionIndex + 1);
+            }
+        } else {
+
+            console.log("Quiz complete! Answers:", answerSlots);
+        }
+    };
 
     return (
         <div className="w-full max-w-4xl bg-gray-800 rounded-lg px-10 py-6 flex flex-col items-center">
@@ -66,19 +84,29 @@ export default function GoalQuiz() {
             <div className="h-full flex flex-col gap-6 items-center justify-center">
                 <div className="flex flex-row gap-4 items-center mb-6">
                     <p className={`font-bold text-gray-300 px-5 py-3 rounded-2xl text-2xl self-start ${colors[questions[currentQuestionIndex].category]}`}>{questions[currentQuestionIndex].category}</p>
-                    <p className="font-bold text-gray-300 text-center text-3xl">{questions[currentQuestionIndex].question}</p>
+                    <p className="font-bold text-gray-300 text-left text-3xl">{questions[currentQuestionIndex].question}</p>
                 </div>
 
                 <div className="flex flex-row gap-4 items-center">
                     <p className="text-gray-300 text-2xl">{questions[currentQuestionIndex].stem}</p>
-                    <input type="text" className="bg-gray-800 text-gray-300 rounded-lg px-3 py-2 border-2 border-gray-600 focus:border-blue-500 focus:bg-blue-900 outline-none transition-all ease-in-out duration-300 text-2xl w-100" onChange={(e) => {
-                        answerSlots[questions[currentQuestionIndex].spot] = e.target.value;
-                    }}></input>
+                    <input type="text" className="bg-gray-800 text-gray-300 rounded-lg px-3 py-2 border-2 border-gray-600 focus:border-blue-500 focus:bg-blue-900 outline-none transition-all ease-in-out duration-300 text-2xl w-100" 
+                        value={answerSlots[questions[currentQuestionIndex].spot]}
+                        onChange={(e) => {
+                            setAnswerSlots(prev => {{
+                                const newAnswers = [...prev];
+                                newAnswers[questions[currentQuestionIndex].spot] = e.target.value;
+                                return newAnswers;
+                            }})
+                        }}
+                    ></input>
                 </div>
-                
-                <button className="cursor-pointer px-5 py-3 bg-gray-700 border-2 border-gray-600 rounded-2xl text-gray-300 hover:bg-blue-700 hover:border-blue-600 transition-colors ease-in-out duration-300">Next</button>
 
-                <div className="font-bold text-xl">1/6</div>
+                <div>
+                    <button onClick={handlePreviousQuestion} className="cursor-pointer px-5 py-3 bg-gray-700 border-2 border-gray-600 rounded-2xl text-gray-300 hover:bg-blue-700 hover:border-blue-600 transition-colors ease-in-out duration-300 mr-4">Previous</button>
+                    <button onClick={handleNextQuestion} className={`cursor-pointer text-gray-300 px-5 py-3 border-2 rounded-2xl transition-colors ease-in-out duration-300 ${answerSlots[questions[currentQuestionIndex].spot] === "" ? "bg-zinc-800 border-zinc-700" : "bg-gray-700 border-gray-600 hover:bg-blue-700 hover:border-blue-600"}`}>Next</button>
+                </div>
+
+                <div className="font-bold text-xl">{currentQuestionIndex+1}/{questions.length}</div>
             </div>
         </div>
     )
