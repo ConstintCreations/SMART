@@ -4,9 +4,19 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faEdit, faCheck } from "@fortawesome/free-solid-svg-icons";
 import confetti from "canvas-confetti";
 
-export default function GoalCard({ id, text, colorID, onDelete, onEdit }: { id: number, text: string, colorID: number, onDelete: (id: number) => void, onEdit: (id: number) => void }) {
+export default function GoalCard({ id, text, createdDate, deadline, colorID, onDelete, onEdit }: { id: number, text: string, createdDate: string, deadline: string, colorID: number, onDelete: (id: number) => void, onEdit: (id: number) => void }) {
 
     const [deleting, setDeleting] = useState(false);
+
+    let progress = 100;
+    const currentDate = new Date();
+    const deadlineDate = new Date(deadline);
+    const createdDateObj = new Date(createdDate);
+    const totalTime = deadlineDate.getTime() - createdDateObj.getTime();
+    const timePassed = currentDate.getTime() - createdDateObj.getTime();
+    if (totalTime > 0) {
+        progress = Math.min(100, Math.max(0, (timePassed / totalTime) * 100));
+    }
 
     const colors = [
         "bg-red-900 hover:bg-red-800 border-red-700 hover:border-red-600",
@@ -14,6 +24,14 @@ export default function GoalCard({ id, text, colorID, onDelete, onEdit }: { id: 
         "bg-yellow-900 hover:bg-yellow-800 border-yellow-700 hover:border-yellow-600",
         "bg-green-900 hover:bg-green-800 border-green-700 hover:border-green-600",
         "bg-blue-900 hover:bg-blue-800 border-blue-700 hover:border-blue-600",
+    ]
+
+    const progressColors = [
+        "bg-red-500",
+        "bg-orange-500",
+        "bg-yellow-500",
+        "bg-green-500",
+        "bg-blue-500",
     ]
 
     function handleDelete(e: React.MouseEvent, completed:boolean = false) {
@@ -68,6 +86,14 @@ export default function GoalCard({ id, text, colorID, onDelete, onEdit }: { id: 
                 <p className="text-sm font-bold h-40 w-full flex flex-col justify-center items-center overflow-hidden">
                     {text}
                 </p>
+                <div className="relative w-full bg-gray-700 rounded-full border-2 border-gray-800 overflow-hidden h-8">
+                    <div className={`absolute bg-gray-300 rounded-full h-full ${progressColors[colorID]}`} style={{width: `${progress}%`}}>
+                        
+                    </div>
+                    <p className={`relative font-bold text-sm ${progress > 50 ? "text-gray-300" : "text-gray-800" }`}>
+                        {Math.floor(progress)}%
+                    </p>
+                </div>
             </div>
         </div>
     )

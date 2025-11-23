@@ -9,6 +9,8 @@ type Goal = {
     text: string;
     answerSlots: string[];
     colorID: number;
+    createdDate: string;
+    deadline: string;
 }
 
 export default function CreateGoal() {
@@ -48,6 +50,31 @@ export default function CreateGoal() {
         }
     }
 
+    function getDeadlineISO(dateTimeAnswerSlot: string) {
+        if (dateTimeAnswerSlot == "") return new Date().toISOString();
+        const [datePartRaw, timePartRaw] = dateTimeAnswerSlot.split("T");
+
+        let datePart = null;
+        let timePart = null;
+
+        const now = new Date();
+        
+        if (datePartRaw && !datePartRaw.includes("undefined") && !datePartRaw.includes(":")) {
+            datePart = datePartRaw;
+        } else {
+            const month = (now.getMonth() + 1).toString().padStart(2, '0');
+            const day = now.getDate().toString().padStart(2, '0');
+            const year = now.getFullYear();
+            datePart = `${year}-${month}-${day}`;
+        }
+        if (timePartRaw && !timePartRaw.includes("undefined")) {
+            timePart = timePartRaw;
+        } else {
+            timePart = "23:59";
+        }
+        return new Date(datePart + "T" + timePart).toISOString();
+    }
+
     function confirmGoal() {
         let existingGoals: Goal[] = [];
         const savedExistingGoals = localStorage.getItem("goals");
@@ -58,7 +85,9 @@ export default function CreateGoal() {
             id: Date.now() + Math.floor(Math.random() * 1000),
             text: `I will ${answerSlots[0]} before ${dateTimeFormatter(answerSlots[1])} by ${answerSlots[2]} every ${answerSlots[3]} for ${answerSlots[4]} because ${answerSlots[5]}.`,
             answerSlots: answerSlots,
-            colorID: Math.floor(Math.random() * 5)
+            colorID: Math.floor(Math.random() * 5),
+            createdDate: new Date().toISOString(),
+            deadline: getDeadlineISO(answerSlots[1]),
         };
         existingGoals.push(newGoal);
         localStorage.setItem("goals", JSON.stringify(existingGoals));

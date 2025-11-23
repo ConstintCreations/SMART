@@ -73,7 +73,9 @@ export default function GoalQuiz({ answerSlots, setAnswerSlots, setQuizComplete 
                 setCurrentQuestionIndex(currentQuestionIndex + 1);
             }
         } else {
-            setQuizComplete(true);
+            if (answerSlots[questions[currentQuestionIndex].spot] !== "") {
+                setQuizComplete(true);
+            }
         }
     };
 

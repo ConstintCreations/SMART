@@ -12,6 +12,8 @@ export default function GoalGrid() {
         text: string;
         answerSlots: string[];
         colorID: number;
+        createdDate: string;
+        deadline: string;
     }
 
     const [editingGoalID, setEditingGoalID] = useState<number | null>(null);
@@ -56,6 +58,31 @@ export default function GoalGrid() {
         }
     }
 
+    function getDeadlineISO(dateTimeAnswerSlot: string) {
+        if (dateTimeAnswerSlot == "") return new Date().toISOString();
+        const [datePartRaw, timePartRaw] = dateTimeAnswerSlot.split("T");
+
+        let datePart = null;
+        let timePart = null;
+
+        const now = new Date();
+        
+        if (datePartRaw && !datePartRaw.includes("undefined") && !datePartRaw.includes(":")) {
+            datePart = datePartRaw;
+        } else {
+            const month = (now.getMonth() + 1).toString().padStart(2, '0');
+            const day = now.getDate().toString().padStart(2, '0');
+            const year = now.getFullYear();
+            datePart = `${year}-${month}-${day}`;
+        }
+        if (timePartRaw && !timePartRaw.includes("undefined")) {
+            timePart = timePartRaw;
+        } else {
+            timePart = "23:59";
+        }
+        return new Date(datePart + "T" + timePart).toISOString();
+    }
+
     function deleteGoal(id: number) {
         const saved = localStorage.getItem("goals");
         if (saved) {
@@ -81,7 +108,8 @@ export default function GoalGrid() {
                     return {
                         ...goal,
                         text: `I will ${answerSlots[0]} before ${dateTimeFormatter(answerSlots[1])} by ${answerSlots[2]} every ${answerSlots[3]} for ${answerSlots[4]} because ${answerSlots[5]}.`,
-                        answerSlots: answerSlots
+                        answerSlots: answerSlots,
+                        deadline: getDeadlineISO(answerSlots[1])
                     }
                 }
                 return goal;
@@ -101,8 +129,8 @@ export default function GoalGrid() {
 
     return (
         <div className="flex flex-row flex-wrap gap-6 justify-center items-center">
-            {existingGoals.map((goal, index) => (
-                <GoalCard key={goal.id} id={goal.id} text={goal.text} colorID={goal.colorID} onDelete={deleteGoal} onEdit={editGoal}></GoalCard>
+            {existingGoals.map((goal) => (
+                <GoalCard key={goal.id} id={goal.id} text={goal.text} createdDate={goal.createdDate} deadline={goal.deadline} colorID={goal.colorID} onDelete={deleteGoal} onEdit={editGoal}></GoalCard>
             ))}
             <a href="/goals/create" className="cursor-pointer flex flex-col justify-center items-center h-40 w-40 bg-gray-800 hover:bg-gray-700 rounded-3xl border-5 border-gray-700 hover:border-gray-600 text-gray-400 hover:text-gray-300 transition-colors ease-in-out duration-300">
                 <FontAwesomeIcon icon={faPlus} className="!size-20"></FontAwesomeIcon>
