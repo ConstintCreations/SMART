@@ -5,6 +5,7 @@ import GoalEditableText from "./goalEditableText";
 import { useRouter } from "next/navigation";
 
 type Goal = {
+    id: number;
     text: string;
     answerSlots: string[];
     colorID: number;
@@ -22,6 +23,7 @@ export default function CreateGoal() {
             existingGoals = JSON.parse(savedExistingGoals);
         }
         const newGoal: Goal = {
+            id: Date.now() + Math.floor(Math.random() * 1000),
             text: `I will ${answerSlots[0]} before ${answerSlots[1]} by ${answerSlots[2]} every ${answerSlots[3]} for ${answerSlots[4]} because ${answerSlots[5]}.`,
             answerSlots: answerSlots,
             colorID: Math.floor(Math.random() * 5)
