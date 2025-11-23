@@ -16,6 +16,7 @@ export default function GoalQuiz({ answerSlots, setAnswerSlots, setQuizComplete 
         question: string;
         stem: string;
         spot: number;
+        date?: boolean;
     };
 
     const questions:Question[] = [
@@ -35,7 +36,8 @@ export default function GoalQuiz({ answerSlots, setAnswerSlots, setQuizComplete 
             category: "Time-Bound",
             question: "When do you want to achieve this goal by?",
             stem: "Before",
-            spot: 1
+            spot: 1,
+            date: true
         },
         {
             category: "Achievable",
@@ -86,14 +88,37 @@ export default function GoalQuiz({ answerSlots, setAnswerSlots, setQuizComplete 
 
                 <div className="flex flex-row gap-4 items-center">
                     <p className="text-gray-300 text-2xl">{questions[currentQuestionIndex].stem}</p>
-                    <input type="text" className="bg-gray-800 text-gray-300 rounded-lg px-3 py-2 border-2 border-gray-600 focus:border-blue-500 focus:bg-blue-900 outline-none transition-all ease-in-out duration-300 text-2xl w-100" 
-                        value={answerSlots[questions[currentQuestionIndex].spot]}
-                        onChange={(e) => {
-                            const newAnswers = [...answerSlots];
-                            newAnswers[questions[currentQuestionIndex].spot] = e.target.value;
-                            setAnswerSlots(newAnswers);
-                        }}
-                    ></input>
+                    {questions[currentQuestionIndex]?.date == true ? 
+                        <div className="flex flex-row items-center gap-2">
+                            <input type="date" className="bg-gray-800 text-gray-300 rounded-lg px-3 py-2 border-2 border-gray-600 focus:border-blue-500 focus:bg-blue-900 outline-none transition-all ease-in-out duration-300 text-2xl" 
+                                value={answerSlots[questions[currentQuestionIndex].spot]?.split("T")[0] || ""}
+                                onChange={(e) => {
+                                    const newAnswers = [...answerSlots];
+                                    const timePart = answerSlots[questions[currentQuestionIndex].spot]?.split("T")[1] || "";
+                                    newAnswers[questions[currentQuestionIndex].spot] = e.target.value + (timePart ? "T" + timePart : "");
+                                    setAnswerSlots(newAnswers);
+                                }}>
+                            
+                            </input>
+                            <input type="time" className="bg-gray-800 text-gray-300 rounded-lg px-3 py-2 border-2 border-gray-600 focus:border-blue-500 focus:bg-blue-900 outline-none transition-all ease-in-out duration-300 text-2xl" 
+                                value={answerSlots[questions[currentQuestionIndex].spot]?.split("T")[1] || ""}
+                                onChange={(e) => {
+                                    const newAnswers = [...answerSlots];
+                                    const datePart = answerSlots[questions[currentQuestionIndex].spot]?.split("T")[0] || "";
+                                    newAnswers[questions[currentQuestionIndex].spot] = (datePart ? datePart + "T" : "") + e.target.value;
+                                    setAnswerSlots(newAnswers);
+                                }}>
+                            </input>
+                        </div> : 
+                        <input type="text" className="bg-gray-800 text-gray-300 rounded-lg px-3 py-2 border-2 border-gray-600 focus:border-blue-500 focus:bg-blue-900 outline-none transition-all ease-in-out duration-300 text-2xl w-100" 
+                            value={answerSlots[questions[currentQuestionIndex].spot]}
+                            onChange={(e) => {
+                                const newAnswers = [...answerSlots];
+                                newAnswers[questions[currentQuestionIndex].spot] = e.target.value;
+                                setAnswerSlots(newAnswers);
+                            }}
+                        ></input>
+                    }
                 </div>
 
                 <div>

@@ -24,6 +24,38 @@ export default function GoalGrid() {
         }
     }, []);
 
+    function dateTimeFormatter(dateTimeAnswerSlot: string) {
+        if (dateTimeAnswerSlot == "") return "";
+
+        const [datePartRaw, timePartRaw] = dateTimeAnswerSlot.split("T");
+
+        let datePart = null;
+        let timePart = null;
+
+        if (datePartRaw && !datePartRaw.includes("undefined") && !datePartRaw.includes(":")) {
+            datePart = datePartRaw.split("-")[1] + "/" + datePartRaw.split("-")[2] + "/" + datePartRaw.split("-")[0];
+        }
+
+        if (timePartRaw && !timePartRaw.includes("undefined")) {
+            let hours = parseInt(timePartRaw.split(":")[0]);
+            const minutes = timePartRaw.split(":")[1];
+            const ampm = hours >= 12 ? "PM" : "AM";
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+            timePart = `${hours}:${minutes} ${ampm}`;
+        }
+        
+        if (datePart && timePart) {
+            return datePart + ", " + timePart;
+        } else if (datePart) {
+            return datePart;
+        } else if (timePart) {
+            return timePart;
+        } else {
+            return "";
+        }
+    }
+
     function deleteGoal(id: number) {
         const saved = localStorage.getItem("goals");
         if (saved) {
@@ -48,7 +80,7 @@ export default function GoalGrid() {
                 if (goal.id === editingGoalID) {
                     return {
                         ...goal,
-                        text: `I will ${answerSlots[0]} before ${answerSlots[1]} by ${answerSlots[2]} every ${answerSlots[3]} for ${answerSlots[4]} because ${answerSlots[5]}.`,
+                        text: `I will ${answerSlots[0]} before ${dateTimeFormatter(answerSlots[1])} by ${answerSlots[2]} every ${answerSlots[3]} for ${answerSlots[4]} because ${answerSlots[5]}.`,
                         answerSlots: answerSlots
                     }
                 }
@@ -89,7 +121,7 @@ export default function GoalGrid() {
                             {
                                 existingGoals.filter((goal) => goal.id === editingGoalID).map((goal) => (
                                     <div key={goal.id}>
-                                        I will <GoalEditableText id={0} answerSlots={answerSlots} setAnswerSlots={setAnswerSlots}></GoalEditableText> before <GoalEditableText id={1} answerSlots={answerSlots} setAnswerSlots={setAnswerSlots}></GoalEditableText> by <GoalEditableText id={2} answerSlots={answerSlots} setAnswerSlots={setAnswerSlots}></GoalEditableText> every <GoalEditableText id={3} answerSlots={answerSlots} setAnswerSlots={setAnswerSlots}></GoalEditableText> for <GoalEditableText id={4} answerSlots={answerSlots} setAnswerSlots={setAnswerSlots}></GoalEditableText> because <GoalEditableText id={5} answerSlots={answerSlots} setAnswerSlots={setAnswerSlots}></GoalEditableText>.
+                                        I will <GoalEditableText id={0} answerSlots={answerSlots} setAnswerSlots={setAnswerSlots}></GoalEditableText> before <GoalEditableText id={1} answerSlots={answerSlots} setAnswerSlots={setAnswerSlots} dateTime={true}></GoalEditableText> by <GoalEditableText id={2} answerSlots={answerSlots} setAnswerSlots={setAnswerSlots}></GoalEditableText> every <GoalEditableText id={3} answerSlots={answerSlots} setAnswerSlots={setAnswerSlots}></GoalEditableText> for <GoalEditableText id={4} answerSlots={answerSlots} setAnswerSlots={setAnswerSlots}></GoalEditableText> because <GoalEditableText id={5} answerSlots={answerSlots} setAnswerSlots={setAnswerSlots}></GoalEditableText>.
                                     </div>
                                 ))
                             }
