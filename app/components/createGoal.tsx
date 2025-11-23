@@ -4,10 +4,33 @@ import GoalQuiz from "./goalQuiz";
 import GoalEditableText from "./goalEditableText";
 import { useRouter } from "next/navigation";
 
+type Goal = {
+    text: string;
+    answerSlots: string[];
+    colorID: number;
+}
+
 export default function CreateGoal() {
     const [answerSlots, setAnswerSlots] = useState<string[]>(["", "", "", "", "", ""]);
     const [quizComplete, setQuizComplete] = useState(false);
     const router = useRouter();
+
+    function confirmGoal() {
+        let existingGoals: Goal[] = [];
+        const savedExistingGoals = localStorage.getItem("goals");
+        if (savedExistingGoals) {
+            existingGoals = JSON.parse(savedExistingGoals);
+        }
+        const newGoal: Goal = {
+            text: `I will ${answerSlots[0]} before ${answerSlots[1]} by ${answerSlots[2]} every ${answerSlots[3]} for ${answerSlots[4]} because ${answerSlots[5]}.`,
+            answerSlots: answerSlots,
+            colorID: Math.floor(Math.random() * 5)
+        };
+        existingGoals.push(newGoal);
+        localStorage.setItem("goals", JSON.stringify(existingGoals));
+
+        router.push("/goals");
+    }
 
     return (
         <div className="h-full flex flex-col items-center justify-center px-10 mb-14 gap-10">
@@ -22,7 +45,7 @@ export default function CreateGoal() {
                     </div>
                     <div className="mt-6 flex flex-row">
                         <button onClick={() => setQuizComplete(false)} className="cursor-pointer px-5 py-3 bg-gray-700 border-2 border-gray-600 rounded-2xl text-gray-300 hover:bg-blue-700 hover:border-blue-600 transition-colors ease-in-out duration-300 mr-4">Back to Quiz</button>
-                        <button onClick={() => router.push("/goals")} className="cursor-pointer px-5 py-3 bg-gray-700 border-2 border-gray-600 rounded-2xl text-gray-300 hover:bg-blue-700 hover:border-blue-600 transition-colors ease-in-out duration-300 mr-4">Confirm Goal</button>
+                        <button onClick={confirmGoal} className="cursor-pointer px-5 py-3 bg-gray-700 border-2 border-gray-600 rounded-2xl text-gray-300 hover:bg-blue-700 hover:border-blue-600 transition-colors ease-in-out duration-300 mr-4">Confirm Goal</button>
                     </div>
                 </div>
             )}
