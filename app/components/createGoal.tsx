@@ -92,7 +92,7 @@ export default function CreateGoal() {
         existingGoals.push(newGoal);
         localStorage.setItem("goals", JSON.stringify(existingGoals));
 
-        router.push("/goals");
+        router.push("./goals");
     }
 
     return (

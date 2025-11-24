@@ -19,7 +19,7 @@ export default function Home() {
       <p className="text-lg text-center max-w-2xl px-4 text-gray-400">
         The SMART framework helps you set clear and achievable goals by being Specific, Measurable, Achievable, Relevant, and Time-bound. They make it easier to stay focused and motivated while working towards your goals.
       </p>
-      <a href="/goals" className="mt-5 bg-gray-800 text-gray-400 rounded-lg px-5 py-3 border-2 border-gray-600 hover:bg-blue-700 hover:border-blue-500 hover:text-blue-200 transition-all ease-in-out duration-300">
+      <a href="./goals" className="mt-5 bg-gray-800 text-gray-400 rounded-lg px-5 py-3 border-2 border-gray-600 hover:bg-blue-700 hover:border-blue-500 hover:text-blue-200 transition-all ease-in-out duration-300">
         Get Started!
       </a>
     </div>

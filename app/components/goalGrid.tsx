@@ -241,7 +241,7 @@ export default function GoalGrid() {
                 {displayedGoals.map((goal) => (
                     <GoalCard key={goal.id} id={goal.id} text={goal.text} createdDate={goal.createdDate} deadline={goal.deadline} colorID={goal.colorID} onDelete={deleteGoal} onEdit={editGoal}></GoalCard>
                 ))}
-                <a href="/goals/create" className="cursor-pointer flex flex-col justify-center items-center h-40 w-40 bg-gray-800 hover:bg-gray-700 rounded-3xl border-5 border-gray-700 hover:border-gray-600 text-gray-400 hover:text-gray-300 transition-colors ease-in-out duration-300">
+                <a href="./goals/create" className="cursor-pointer flex flex-col justify-center items-center h-40 w-40 bg-gray-800 hover:bg-gray-700 rounded-3xl border-5 border-gray-700 hover:border-gray-600 text-gray-400 hover:text-gray-300 transition-colors ease-in-out duration-300">
                     <FontAwesomeIcon icon={faPlus} className="!size-20"></FontAwesomeIcon>
                 </a>
 
