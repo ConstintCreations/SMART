@@ -1,7 +1,13 @@
-import type { NextConfig } from "next";
+/** @type {import('next').NextConfig} */
+const isProd = process.env.NODE_ENV === 'production';
 
-const nextConfig: NextConfig = {
-  /* config options here */
+const nextConfig = {
+  output: isProd ? 'export' : undefined,
+
+  ...(isProd && {
+    basePath: '/SMART',
+    assetPrefix: '/SMART/',
+  }),
 };
 
-export default nextConfig;
+module.exports = nextConfig;
