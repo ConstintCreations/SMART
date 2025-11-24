@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "SMART",
-  description: "Generate SMART goals",
+  description: "Create SMART goals",
 };
 
 export default function RootLayout({
