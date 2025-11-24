@@ -140,7 +140,7 @@ export default function GoalQuiz({ answerSlots, setAnswerSlots, setQuizComplete 
                                     setAnswerSlots(newAnswers);
                                 }}
                             ></input>
-                            <FontAwesomeIcon icon={faDice} tabIndex={0} className="!size-8 text-gray-400 border-2 border-gray-600 bg-gray-800 hover:border-blue-500 hover:bg-blue-900 p-2 rounded-xl ml-2 cursor-pointer hover:text-gray-300 transition-colors ease-in-out duration-300" onClick={() => {
+                            <FontAwesomeIcon icon={faDice} tabIndex={0} className="!size-8 text-gray-400 border-2 border-gray-600 bg-gray-800 hover:border-blue-500 hover:bg-blue-900 p-2 rounded-xl ml-2 cursor-pointer hover:text-gray-300 outline-none transition-colors ease-in-out duration-300" onClick={() => {
                                     const suggestions = questions[currentQuestionIndex].suggestions;
                                     if (suggestions && suggestions.length > 0) {
                                         const randomIndex = Math.floor(Math.random() * suggestions.length);
