@@ -1,6 +1,6 @@
 "use client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faClose } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faClose, faFilter, faArrowDownShortWide, faArrowUpWideShort } from "@fortawesome/free-solid-svg-icons";
 import { useState, useEffect } from "react";
 import GoalCard from "./goalCard";
 import GoalEditableText from "./goalEditableText";
@@ -156,13 +156,89 @@ export default function GoalGrid() {
 
     const [answerSlots, setAnswerSlots] = useState<string[]>(["", "", "", "", "", ""]);
 
+    const [search, setSearch] = useState("");
+
+    type SortOption = "Alphabetically" | "By Deadline" | "By Progress" | null;
+    type SortDirection = "Ascending" | "Descending";
+
+    const [sortOption, setSortOption] = useState<SortOption>(null);
+    const [sortDirection, setSortDirection] = useState<SortDirection>("Ascending");
+
+    const chosenSortOptionStyle = "text-gray-300 bg-blue-700 hover:bg-blue-700";
+
+    const filteredGoals = existingGoals.filter((goal) =>
+        goal.text.toLowerCase().includes(search.toLowerCase())
+    );
+
+    let displayedGoals = [...filteredGoals];
+
+    if (sortOption !== null) {
+        displayedGoals.sort((a, b) => {
+            
+
+            switch (sortOption) {
+                case "Alphabetically":
+                    if (a.text < b.text) return sortDirection == "Ascending" ? -1 : 1;
+                    if (a.text > b.text) return sortDirection == "Ascending" ? 1 : -1;
+                break;
+                case "By Deadline":
+                    const dateA = new Date(a.deadline);
+                    const dateB = new Date(b.deadline);
+                    if (dateA < dateB) return sortDirection == "Ascending" ? -1 : 1;
+                    if (dateA > dateB) return sortDirection == "Ascending" ? 1 : -1;
+                break;
+                case "By Progress":
+                    let progressA = 100;
+                    let progressB = 100;
+                    const currentDate = new Date();
+                    const deadlineDateA = new Date(a.deadline);
+                    const deadlineDateB = new Date(b.deadline);
+                    const createdDateObjA = new Date(a.createdDate);
+                    const createdDateObjB = new Date(b.createdDate);
+                    const totalTimeA = deadlineDateA.getTime() - createdDateObjA.getTime();
+                    const totalTimeB = deadlineDateB.getTime() - createdDateObjB.getTime();
+                    const timePassedA = currentDate.getTime() - createdDateObjA.getTime();
+                    const timePassedB = currentDate.getTime() - createdDateObjB.getTime();
+                    if (totalTimeA > 0) {
+                        progressA = Math.min(100, Math.max(0, (timePassedA / totalTimeA) * 100));
+                    }
+                    if (totalTimeB > 0) {
+                        progressB = Math.min(100, Math.max(0, (timePassedB / totalTimeB) * 100));
+                    }
+                    if (progressA < progressB) return sortDirection == "Ascending" ? -1 : 1;
+                    if (progressA > progressB) return sortDirection == "Ascending" ? 1 : -1;
+                break;
+            }
+
+            return 0;
+        });
+    }
+
     return (
         <div className="w-full flex flex-col items-center">
             
             <GoalInfo goals={existingGoals} />
 
+            <div className="w-full flex flex-row justify-center items-center mb-4 gap-3">
+                <input className="text-2xl font-bold text-gray-300 border-2 p-2 rounded-xl border-gray-800 bg-gray-900 focus:border-gray-700 outline-none transition-colors ease-in-out duration-300" placeholder="Search..." value={search} onChange={(e) => {
+                    setSearch(e.target.value);
+                }}></input>
+                <div className="group flex flex-row justify-center items-center relative">
+                    <FontAwesomeIcon icon={faFilter} className="text-2xl !size-8 rounded-xl border-gray-800 bg-gray-900 text-gray-400 p-2 border-2 group-hover:text-gray-300 group-hover:border-gray-700 group-hover:bg-gray-800 transition-colors duration-300 ease-in-out cursor-pointer"></FontAwesomeIcon>
+                    <div className="absolute pointer-events-none flex flex-col gap-1 justify-center items-center top-13 left-0 w-48 border-2 border-gray-700 bg-gray-800 rounded-lg p-1 opacity-0 group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity ease-in-out duration-300 z-10">
+                        <div className="cursor-pointer flex flex-row text-gray-300 w-full px-3 py-1 font-bold justify-between">
+                            <h2>Filter</h2>
+                            <FontAwesomeIcon onClick={() => {setSortDirection(sortDirection == "Ascending" ? "Descending" : "Ascending")}} icon={sortDirection == "Ascending" ? faArrowUpWideShort : faArrowDownShortWide} className="!size-5 text-gray-400 hover:text-gray-300 transition-colors ease-in-out duration-300"></FontAwesomeIcon>
+                        </div>
+                        <div onClick={() => {setSortOption(sortOption == "Alphabetically" ? null : "Alphabetically")}} className={`cursor-pointer flex flex-row w-full p-1 justify-center rounded-lg transition-colors ease-in-out duration-300 ${sortOption == "Alphabetically" ? chosenSortOptionStyle : "text-gray-400 bg-gray-800 hover:bg-gray-700"}`}>Alphabetically</div>
+                        <div onClick={() => {setSortOption(sortOption == "By Deadline" ? null : "By Deadline")}} className={`cursor-pointer flex flex-row w-full p-1 justify-center rounded-lg transition-colors ease-in-out duration-300 ${sortOption == "By Deadline" ? chosenSortOptionStyle : "text-gray-400 bg-gray-800 hover:bg-gray-700"}`}>By Deadline</div>
+                        <div onClick={() => {setSortOption(sortOption == "By Progress" ? null : "By Progress")}} className={`cursor-pointer flex flex-row w-full p-1 justify-center rounded-lg transition-colors ease-in-out duration-300 ${sortOption == "By Progress" ? chosenSortOptionStyle : "text-gray-400 bg-gray-800 hover:bg-gray-700"}`}>By Progress</div>
+                    </div>
+                </div>
+            </div>
+
             <div className="flex flex-row flex-wrap gap-6 justify-center items-center">
-                {existingGoals.map((goal) => (
+                {displayedGoals.map((goal) => (
                     <GoalCard key={goal.id} id={goal.id} text={goal.text} createdDate={goal.createdDate} deadline={goal.deadline} colorID={goal.colorID} onDelete={deleteGoal} onEdit={editGoal}></GoalCard>
                 ))}
                 <a href="/goals/create" className="cursor-pointer flex flex-col justify-center items-center h-40 w-40 bg-gray-800 hover:bg-gray-700 rounded-3xl border-5 border-gray-700 hover:border-gray-600 text-gray-400 hover:text-gray-300 transition-colors ease-in-out duration-300">
